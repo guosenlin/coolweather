@@ -3,12 +3,15 @@ package com.gsl.coolweather.app.db;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 /**
  * Created by guosenlin on 16-8-6.
  */
 
 public class CoolWeatherOpenHelper extends SQLiteOpenHelper {
+    private static final String TAG = "CoolWeatherOpenHelper";
+
     private static final String CRAETE_TABLE_PROVINCE = "create table province ("
             + "id integer primary key autoincrement,"
             + "province_name text,"
@@ -43,6 +46,6 @@ public class CoolWeatherOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
-
+        Log.d(TAG, "------------------------->>to upgrade " + newVersion);
     }
 }
