@@ -2,8 +2,11 @@ package com.gsl.coolweather.app.activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.nfc.Tag;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Layout;
 import android.text.TextUtils;
 import android.util.Log;
@@ -50,10 +53,21 @@ public class ChooseAreaActivity extends Activity implements AdapterView.OnItemCl
     private int currentLevel;
 
     private static final String WEATHER_URL_BASE = "http://www.weather.com.cn/data/list3/";
+    private boolean isFromWeatherActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        isFromWeatherActivity = getIntent().getBooleanExtra("from_weather_activity", false);
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        if(sp.getBoolean("city_selected", false) && !isFromWeatherActivity) {
+            Intent intent = new Intent(this, WeatherActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.choose_area);
 
@@ -75,6 +89,11 @@ public class ChooseAreaActivity extends Activity implements AdapterView.OnItemCl
         } else if(currentLevel == LEVEL_CITY) {
             selectedCity = cityList.get(i);
             queryCounty();
+        } else if(currentLevel == LEVEL_COUNTY) {
+            Intent intent = new Intent(this, WeatherActivity.class);
+            intent.putExtra("county_code", countyList.get(i).getCode());
+            startActivity(intent);
+            finish();
         }
     }
 
@@ -203,6 +222,21 @@ public class ChooseAreaActivity extends Activity implements AdapterView.OnItemCl
     private void closeProgressDialog() {
         if(null!=progressDialog) {
             progressDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(currentLevel == LEVEL_PROVINCE) {
+            if(isFromWeatherActivity) {
+                Intent intent = new Intent(this, WeatherActivity.class);
+                startActivity(intent);
+            }
+            finish();
+        } else if(currentLevel == LEVEL_CITY) {
+            queryProvince();
+        } else if(currentLevel == LEVEL_COUNTY) {
+            queryCity();
         }
     }
 }

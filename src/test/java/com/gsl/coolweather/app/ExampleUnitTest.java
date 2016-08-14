@@ -6,6 +6,9 @@ import com.gsl.coolweather.app.util.HttpUtil;
 
 import org.junit.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -21,8 +24,12 @@ public class ExampleUnitTest {
 
     @Test
     public void getProvinceFromServer() {
-        //System.out.println(HttpUtil.get("http://www.weather.com.cn/data/list3/city.xml"));
-        HttpUtil.get("http://www.weather.com.cn/data/list3/city.xml", new HttpCallbackListener() {
+        //String url = "http://www.weather.com.cn/data/list3/city.xml";
+        String url = "http://www.weather.com.cn/data/cityinfo/101040100.html";
+
+        //System.out.println(HttpUtil.get(url));
+
+        HttpUtil.get(url, new HttpCallbackListener() {
             @Override
             public void onFinish(String response) {
                 System.out.println("----------------------------------onFinish------------------------------");
@@ -41,6 +48,16 @@ public class ExampleUnitTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void httpPost() {
+        String url = "http://www.baidu.com";
+        Map<String, String> data = new HashMap<>();
+        data.put("username", "xiaoming");
+        data.put("password", "123456");
+        String response = HttpUtil.post(url, data, null);
+        System.out.println(response);
     }
 
     @Test
